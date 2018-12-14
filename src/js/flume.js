@@ -105,6 +105,7 @@ export default (function() {
       if (this.settings.onAutoplay) {
         this.beginAutoplay();
       }
+      console.log(this.settings);
     }
 
     setState(newState) {
