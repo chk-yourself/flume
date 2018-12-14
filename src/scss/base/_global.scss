@@ -1,0 +1,16 @@
+html {
+  font-size: 16px;
+}
+
+:root {
+  --arrow-color: rgba(255, 255, 255, 0.7);
+  --dot-color: rgba(255, 255, 255, 0.7);
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
