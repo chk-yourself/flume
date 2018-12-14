@@ -8,7 +8,6 @@ export default (function() {
     showArrows: true,
     showDots: true,
     autoplaySpeed: 5000,
-    showThumbnails: false,
     onInfiniteLoop: true,
     slidesToShow: 1,
     arrowColor: {
@@ -32,7 +31,6 @@ export default (function() {
     showArrows: 'boolean',
     showDots: 'boolean',
     autoplaySpeed: 'number',
-    showThumbnails: 'boolean',
     onInfiniteLoop: 'boolean',
     slidesToShow: 'number',
     arrowColor: 'object',
