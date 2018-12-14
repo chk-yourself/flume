@@ -1,17 +1,17 @@
 # Flume
 
-- A dependency-free, flexible plugin for building responsive, highly-customizable, touch-enabled sliders + carousels
+A dependency-free, flexible plugin for building responsive, highly-customizable, touch-enabled sliders + carousels
 
-- Features:
-..* Responsive design
-..* Touch/swipe support
-..* Sliding animations
+**Features:**
+* Responsive design
+* Touch/swipe support
+* Sliding animations
 
-- Customizable settings include:
-..* Infinite Loop
-..* Autoplay
-..* Dot indicators
-..* Arrow indicators
+**Customizable settings include:**
+* Infinite Loop
+* Autoplay
+* Dot indicators
+* Arrow indicators
 
 
 ## Built With
