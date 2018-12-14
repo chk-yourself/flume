@@ -7,7 +7,7 @@
   "homepage": "https://chk-yourself.github.io/flume/",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --mode development --open",
+    "start": "webpack-dev-server --mode development --open --hot",
     "transpile": "babel src -d dist --copy-files",
     "prepublishOnly": "npm run transpile",
     "build": "webpack --mode production",

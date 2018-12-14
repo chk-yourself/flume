@@ -16,18 +16,6 @@ html {
   margin: 0;
 }
 
-.container {
-  position: absolute;
-  width: 800px;
-  max-width: 100vw;
-  height: 500px;
-  max-height: 100vh;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-}
-
 .slider {
   position: relative;
   width: 100%;
