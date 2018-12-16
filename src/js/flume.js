@@ -1,4 +1,4 @@
-import { $, $all, createElement, debounce } from './utilities';
+import { $, $all, createElement, debounce, mouseTouch } from './utilities';
 
 // eslint-disable-next-line func-names
 export default (function() {
@@ -99,8 +99,7 @@ export default (function() {
       if (this.settings.showDots) {
         this.mountDots();
       }
-      this.sliderInner.addEventListener('mousedown', this.swipeStart);
-      this.sliderInner.addEventListener('touchstart', this.swipeStart);
+      this.sliderInner.addEventListener(mouseTouch(), this.swipeStart);
       window.addEventListener('resize', debounce(this.resizeSlider, 250));
       if (this.settings.onAutoplay) {
         this.beginAutoplay();

@@ -56,3 +56,5 @@ export const createElement = (tagName, attributes, ...children) => {
 
   return node;
 };
+
+export const mouseTouch = () => ('ontouchstart' in document === true ? 'touchstart' : 'mousedown');
