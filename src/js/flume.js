@@ -229,9 +229,8 @@ export default (function() {
     slide(movePos = 0) {
       const isVertical = this.settings.isVertical;
       const slideLength = isVertical ? this.slides[0].offsetHeight : this.slides[0].offsetWidth;
-      const startPos = isVertical ? this.sliderInner.offsetTop : this.sliderInner.offsetLeft;
       const endPos = this.state.activeSlide * -slideLength;
-      const axis = isVertical ? 'Y' : 'X';
+      const axis = isVertical ? 'top' : 'left';
       if (!this.state.skipTransition) {
         if (this.sliderInner.matches('.no-transition')) {
           this.sliderInner.classList.remove('no-transition');
@@ -240,7 +239,7 @@ export default (function() {
         this.sliderInner.classList.add('no-transition');
         this.setState({ skipTransition: false });
       }
-      this.sliderInner.style.transform = `translate${axis}(${endPos - startPos + movePos}px)`;
+      this.sliderInner.style[axis] = `${endPos + movePos}px`;
     }
 
     swipeStart(e) {
@@ -293,12 +292,19 @@ export default (function() {
       } else {
         this.slide();
       }
-
-      this.sliderInner.removeEventListener('mousemove', this.swipeMove);
-      this.sliderInner.removeEventListener('mouseup', this.swipeEnd);
-      this.sliderInner.removeEventListener('mouseleave', this.swipeEnd);
-      this.sliderInner.removeEventListener('touchmove', this.swipeMove);
-      this.sliderInner.removeEventListener('touchend', this.swipeEnd);
+      // eslint-disable-next-line default-case
+      switch (e.type) {
+        case 'mouseleave':
+        case 'mouseup':
+          this.sliderInner.removeEventListener('mousemove', this.swipeMove);
+          this.sliderInner.removeEventListener('mouseup', this.swipeEnd);
+          this.sliderInner.removeEventListener('mouseleave', this.swipeEnd);
+          break;
+        case 'touchend':
+          this.sliderInner.removeEventListener('touchmove', this.swipeMove);
+          this.sliderInner.removeEventListener('touchend', this.swipeEnd);
+          break;
+      }
       this.setState({ startX: null, startY: null, isAnimating: false });
     }
 
