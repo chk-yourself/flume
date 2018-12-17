@@ -1,9 +1,23 @@
+$pink: #f783ac;
+$violet: #9775fa;
+$blue: #4dabf7;
+$teal: #20c997;
+$orange: #ffa94d;
+
 .container {
-  width: 800px;
+  width: 300px;
   max-width: 100vw;
-  height: 500px;
+  height: 200px;
   max-height: 100vh;
   margin: 24px auto;
+  @media (min-width: 768px) {
+    width: 600px;
+    height: 400px;
+  }
+  @media (min-width: 992px) {
+    width: 800px;
+    height: 500px;
+  }
 }
 
 // Header
@@ -25,4 +39,26 @@ h2 {
 .intro {
   text-align: center;
   font-family: sans-serif;
+}
+
+.slider__slide {
+  font-size: 50px;
+  @media (min-width: 768px) {
+    font-size: 100px;
+  }
+  &--0 {
+    background-color: $pink;
+  }
+  &--1 {
+    background-color: $violet;
+  }
+  &--2 {
+    background-color: $blue;
+  }
+  &--3 {
+    background-color: $teal;
+  }
+  &--4 {
+    background-color: $orange;
+  }
 }

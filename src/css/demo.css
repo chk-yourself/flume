@@ -1,9 +1,23 @@
 .container {
-  width: 800px;
+  width: 300px;
   max-width: 100vw;
-  height: 500px;
+  height: 200px;
   max-height: 100vh;
   margin: 24px auto;
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 600px;
+    height: 400px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    width: 800px;
+    height: 500px;
+  }
 }
 
 header {
@@ -23,5 +37,35 @@ h2 {
 .intro {
   text-align: center;
   font-family: sans-serif;
+}
+
+.slider__slide {
+  font-size: 50px;
+}
+
+@media (min-width: 768px) {
+  .slider__slide {
+    font-size: 100px;
+  }
+}
+
+.slider__slide--0 {
+  background-color: #f783ac;
+}
+
+.slider__slide--1 {
+  background-color: #9775fa;
+}
+
+.slider__slide--2 {
+  background-color: #4dabf7;
+}
+
+.slider__slide--3 {
+  background-color: #20c997;
+}
+
+.slider__slide--4 {
+  background-color: #ffa94d;
 }
 /*# sourceMappingURL=demo.css.map */
