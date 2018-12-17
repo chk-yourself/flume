@@ -233,9 +233,11 @@ export default (function() {
       const endPos = this.state.activeSlide * -slideLength;
       const axis = isVertical ? 'Y' : 'X';
       if (!this.state.skipTransition) {
-        this.sliderInner.style.transition = 'transform .2s ease-in';
+        if (this.sliderInner.matches('.no-transition')) {
+          this.sliderInner.classList.remove('no-transition');
+        }
       } else {
-        this.sliderInner.style.transition = 'none';
+        this.sliderInner.classList.add('no-transition');
         this.setState({ skipTransition: false });
       }
       this.sliderInner.style.transform = `translate${axis}(${endPos - startPos + movePos}px)`;
@@ -243,17 +245,24 @@ export default (function() {
 
     swipeStart(e) {
       if (this.state.isAnimating) return;
-      const touch = e.type !== 'touchmove' ? e : e.targetTouches[0] || e.changedTouches[0];
+      const touch = e.type !== 'touchstart' ? e : e.targetTouches[0] || e.changedTouches[0];
       this.setState({
         startX: touch.pageX,
         startY: touch.pageY,
         isAnimating: true
       });
-      this.sliderInner.addEventListener('mousemove', this.swipeMove);
-      this.sliderInner.addEventListener('touchmove', this.swipeMove);
-      this.sliderInner.addEventListener('mouseup', this.swipeEnd);
-      this.sliderInner.addEventListener('mouseleave', this.swipeEnd);
-      this.sliderInner.addEventListener('touchend', this.swipeEnd);
+      // eslint-disable-next-line default-case
+      switch (e.type) {
+        case 'mousedown':
+          this.sliderInner.addEventListener('mousemove', this.swipeMove);
+          this.sliderInner.addEventListener('mouseleave', this.swipeEnd);
+          this.sliderInner.addEventListener('mouseup', this.swipeEnd);
+          break;
+        case 'touchstart':
+          this.sliderInner.addEventListener('touchmove', this.swipeMove);
+          this.sliderInner.addEventListener('touchend', this.swipeEnd);
+          break;
+      }
     }
 
     swipeMove(e) {

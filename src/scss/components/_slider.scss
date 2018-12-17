@@ -53,6 +53,12 @@
   align-items: center;
   justify-content: center;
   z-index: 99;
+  -webkit-transition: all .2s ease-in;
+  transition: all .2s ease-in;
+  &.no-transition {
+    -webkit-transition: none;
+    transition: none;
+  }
 }
 
 .slider__slide {
