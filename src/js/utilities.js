@@ -58,3 +58,13 @@ export const createElement = (tagName, attributes, ...children) => {
 };
 
 export const mouseTouch = () => ('ontouchstart' in document === true ? 'touchstart' : 'mousedown');
+
+function memoized(func) {
+  const cache = {};
+  return (arg) => {
+    if (!cache[arg]) {
+      cache[arg] = func(arg);
+    }
+    return cache[arg];
+  };
+}

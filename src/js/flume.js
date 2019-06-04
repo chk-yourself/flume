@@ -38,7 +38,7 @@ export default (function() {
     isVertical: 'boolean'
   };
 
-  class Slider {
+  class Flume {
     constructor(settings) {
       try {
         if ('id' in settings === false) {
@@ -335,7 +335,5 @@ export default (function() {
       }
     }
   }
-  return {
-    Slider
-  };
+  return Flume;
 })();
