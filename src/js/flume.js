@@ -1,7 +1,7 @@
 import { $, $all, createElement, debounce, mouseTouch } from './utilities';
 
-// eslint-disable-next-line func-names
-export default (function() {
+export default (function flume() {
+  // Default props
   const def = {
     id: '',
     onAutoplay: false,
@@ -39,24 +39,25 @@ export default (function() {
   };
 
   class Flume {
-    constructor(settings) {
+    constructor(props) {
       try {
-        if ('id' in settings === false) {
+        if ('id' in props === false) {
           throw new Error('Must include prop `id`');
         }
-        Object.keys(settings).forEach(key => {
+        Object.keys(props).forEach(key => {
           const definedType = propTypes[key];
+          const type = typeof props[key];
           if (typeof definedType === 'undefined') {
             throw new Error(`Invalid propName: \`${key}\` is undefined`);
           }
-          if (typeof settings[key] !== definedType) {
+          if (type !== definedType) {
             throw new Error(`Invalid propType for \`${key}\`: expected type 
-\`${definedType}\`, received \`${typeof settings[key]}\``);
+\`${definedType}\`, received \`${type}\``);
           }
         });
-        this.settings = {
+        this.props = {
           ...def,
-          ...settings
+          ...props
         };
         this.state = {
           activeSlide: 0,
@@ -67,7 +68,7 @@ export default (function() {
           startY: null,
           intervalID: null
         };
-        this.elem = $(`#${settings.id}`);
+        this.elem = $(`#${props.id}`);
       } catch (e) {
         console.error(e.message);
       }
@@ -87,21 +88,27 @@ export default (function() {
     }
 
     init() {
-      this.state.slidesTotal = this.slides.length;
+      // Set total number of slides
+      this.setState({
+        slidesTotal: this.slides.length
+      });
+      // Prepare wrapper containing slides
       this.initSliderInner();
-      if (this.settings.onInfiniteLoop) {
+      if (this.props.onInfiniteLoop) {
         this.setState({ activeSlide: 1 });
         this.initInfiniteLoop();
       }
-      if (this.settings.showArrows) {
+      // Mount arrow indicators, if opted in; default = true
+      if (this.props.showArrows) {
         this.mountArrows();
       }
-      if (this.settings.showDots) {
+      // Mount dot indicators, if opted in; default = true
+      if (this.props.showDots) {
         this.mountDots();
       }
       this.sliderInner.addEventListener(mouseTouch(), this.swipeStart);
       window.addEventListener('resize', debounce(this.resizeSlider, 250));
-      if (this.settings.onAutoplay) {
+      if (this.props.onAutoplay) {
         this.beginAutoplay();
       }
     }
@@ -114,14 +121,14 @@ export default (function() {
     }
 
     beginAutoplay() {
-      const currentInterval = this.state.intervalID;
-      const delay = this.settings.autoplaySpeed;
+      const { intervalID: currentInterval, activeSlide } = this.state;
+      const { autoplaySpeed: delay } = this.props;
       if (currentInterval) {
         clearInterval(currentInterval);
       }
       this.setState({
         intervalID: setInterval(() => {
-          const currentIndex = this.state.activeSlide;
+          const currentIndex = activeSlide;
           const lastIndex = this.slides.length - 1;
           const nextIndex = currentIndex !== lastIndex ? currentIndex + 1 : 0;
           this.setActiveSlide(nextIndex);
@@ -129,21 +136,30 @@ export default (function() {
       });
     }
 
+    // Prepare wrapper containing slides
     initSliderInner() {
-      const onInfiniteLoop = this.settings.onInfiniteLoop;
+      const { onInfiniteLoop, isVertical } = this.props;
       const slidesTotal = !onInfiniteLoop ? this.slides.length : this.slides.length + 2;
 
-      if (this.settings.isVertical) {
+      if (isVertical) {
+        // Set wrapper height to total height of slides combined and stack slides vertically
         this.elem.classList.add('is-vertical');
         this.sliderInner.style.height = `${slidesTotal * 100}%`;
         this.sliderInner.style.top = '-100%';
       } else {
+        // Set wrapper width to total width of slides combined and lay slides horizontally
         this.sliderInner.style.width = `${slidesTotal * 100}%`;
         this.sliderInner.style.left = '-100%';
       }
     }
 
+    /**
+     * Creates an illusion of infinitely looping slides, using clones of the first and last slides
+     * When a cloned slide is shown, the slider jumps to the position of the original slide
+     * without detection by setting `skipTransition` to true
+     */
     initInfiniteLoop() {
+      // Clone first and last slides, and append them to the back and the front of the stack, respectively
       const cloneFirst = this.slides[0].cloneNode(true);
       const cloneLast = this.slides[this.slides.length - 1].cloneNode(true);
       this.sliderInner.appendChild(cloneFirst);
@@ -153,6 +169,8 @@ export default (function() {
         const currentIndex = this.state.activeSlide;
         const lastIndex = this.slides.length - 1;
         if (currentIndex !== 0 && currentIndex !== lastIndex) return;
+         // If the current index is 0, and the clone of the last slide is shown, jump to the original last slide
+         // If the current index is the last index, and the clone of the first slide is shown, jump to the original first slide
         this.setState({ skipTransition: true });
         const nextIndex = currentIndex === 0 ? lastIndex - 1 : 1;
         this.setActiveSlide(nextIndex);
@@ -196,7 +214,7 @@ export default (function() {
         const selectedSlide = this.state.activeSlide + parseInt(e.target.dataset.slideChange);
         if (selectedSlide < 0 || selectedSlide > this.slides.length - 1) return;
         this.setActiveSlide(selectedSlide);
-        if (this.settings.onAutoplay) {
+        if (this.props.onAutoplay) {
           this.beginAutoplay();
         }
       });
@@ -207,7 +225,6 @@ export default (function() {
       const dotsList = createElement('ul', {
         className: 'slider__dots'
       });
-      const id = this.settings.id;
       for (let i = 0; i < this.state.slidesTotal; i++) {
         const dot = createElement('li', {
           className: `slider__dot${i === 0 ? ' is-active' : ''}`,
@@ -219,7 +236,7 @@ export default (function() {
         if (!e.target.matches('.slider__dot')) return;
         const slideIndex = +e.target.dataset.index + 1;
         this.setActiveSlide(slideIndex);
-        if (this.settings.onAutoplay) {
+        if (this.props.onAutoplay) {
           this.beginAutoplay();
         }
       });
@@ -227,11 +244,12 @@ export default (function() {
     }
 
     slide(movePos = 0) {
-      const isVertical = this.settings.isVertical;
+      const { isVertical } = this.props;
+      const { activeSlide, skipTransition } = this.state;
       const slideLength = isVertical ? this.slides[0].offsetHeight : this.slides[0].offsetWidth;
-      const endPos = this.state.activeSlide * -slideLength;
+      const endPos = activeSlide * -slideLength;
       const axis = isVertical ? 'top' : 'left';
-      if (!this.state.skipTransition) {
+      if (!skipTransition) {
         if (this.sliderInner.matches('.no-transition')) {
           this.sliderInner.classList.remove('no-transition');
         }
@@ -250,17 +268,14 @@ export default (function() {
         startY: touch.pageY,
         isAnimating: true
       });
-      // eslint-disable-next-line default-case
-      switch (e.type) {
-        case 'mousedown':
-          this.sliderInner.addEventListener('mousemove', this.swipeMove);
-          this.sliderInner.addEventListener('mouseleave', this.swipeEnd);
-          this.sliderInner.addEventListener('mouseup', this.swipeEnd);
-          break;
-        case 'touchstart':
-          this.sliderInner.addEventListener('touchmove', this.swipeMove);
-          this.sliderInner.addEventListener('touchend', this.swipeEnd);
-          break;
+
+      if (e.type === 'touchstart') {
+        this.sliderInner.addEventListener('touchmove', this.swipeMove);
+        this.sliderInner.addEventListener('touchend', this.swipeEnd);
+      } else {
+        this.sliderInner.addEventListener('mousemove', this.swipeMove);
+        this.sliderInner.addEventListener('mouseleave', this.swipeEnd);
+        this.sliderInner.addEventListener('mouseup', this.swipeEnd);
       }
     }
 
@@ -270,7 +285,7 @@ export default (function() {
       const endX = touch.pageX;
       const endY = touch.pageY;
       const { startX, startY } = this.state;
-      if (this.settings.isVertical) {
+      if (this.props.isVertical) {
         this.slide(endY - startY);
       } else {
         this.slide(endX - startX);
@@ -279,14 +294,14 @@ export default (function() {
 
     swipeEnd(e) {
       const touch = e.type !== 'touchmove' ? e : e.targetTouches[0] || e.changedTouches[0];
-      const { startX, startY } = this.state;
+      const { startX, startY, activeSlide } = this.state;
       const moveX = touch.pageX - startX;
       const moveY = touch.pageY - startY;
-      const changeSlide = !this.settings.isVertical ? Math.abs(moveX) >= 40 : Math.abs(moveY) >= 40;
+      const changeSlide = !this.props.isVertical ? Math.abs(moveX) >= 40 : Math.abs(moveY) >= 40;
       if (changeSlide) {
-        const nextIndex = moveX > 0 ? --this.state.activeSlide : ++this.state.activeSlide;
+        const nextIndex = moveX > 0 ? activeSlide - 1 : activeSlide + 1;
         this.setActiveSlide(nextIndex);
-        if (this.settings.onAutoplay) {
+        if (this.props.onAutoplay) {
           this.beginAutoplay();
         }
       } else {
@@ -308,7 +323,7 @@ export default (function() {
       this.setState({ startX: null, startY: null, isAnimating: false });
     }
 
-    resizeSlider(e) {
+    resizeSlider() {
       this.slide();
     }
 
@@ -318,10 +333,10 @@ export default (function() {
     }
 
     updateView() {
-      const dotIndex = !this.settings.onInfiniteLoop
+      const dotIndex = !this.props.onInfiniteLoop
         ? this.state.activeSlide
         : this.state.activeSlide - 1;
-      const showDots = this.settings.showDots;
+      const { showDots } = this.props;
       this.slide();
       if (showDots) {
         const currentDot = $('.slider__dot.is-active', this.elem);

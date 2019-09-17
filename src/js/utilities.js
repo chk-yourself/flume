@@ -20,7 +20,7 @@ export function $all(selector, context = document) {
   return context.querySelectorAll(selector);
 }
 
-export const createElement = (tagName, attributes, ...children) => {
+export function createElement(tagName, attributes, ...children) {
   const node = document.createElement(tagName);
 
   if (attributes) {
@@ -55,16 +55,6 @@ export const createElement = (tagName, attributes, ...children) => {
   });
 
   return node;
-};
+}
 
 export const mouseTouch = () => ('ontouchstart' in document === true ? 'touchstart' : 'mousedown');
-
-function memoized(func) {
-  const cache = {};
-  return (arg) => {
-    if (!cache[arg]) {
-      cache[arg] = func(arg);
-    }
-    return cache[arg];
-  };
-}

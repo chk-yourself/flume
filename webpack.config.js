@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const autoprefixer = require('autoprefixer');
 require('babel-register');
 
 module.exports = {
@@ -27,7 +28,7 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               ident: 'postcss',
-              plugins: [require('autoprefixer')({}), require('cssnano')({ preset: 'default' })],
+              plugins: [autoprefixer, require('cssnano')({ preset: 'default' })],
               minimize: true
             }
           }
